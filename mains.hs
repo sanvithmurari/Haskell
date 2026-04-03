@@ -1,4 +1,9 @@
-{-# LANGUAGE BlockArguments #-}
+import System.IO(hFlush, stdout)
+
+fact ::Int->Int
+fact n
+    |n==1=1
+    |otherwise = n*fact (n- 1)
 main1 = let {
     fact n
     |n==1=1
@@ -35,11 +40,11 @@ nTimes n a = do
     a
     nTimes (n-1) a
 
-main4= nTimes 3 do{
-    putStr "Enter a Line: ";
-    str <- getLine;
-    putStrLn str;
-}
+main4= nTimes 3 (do 
+    putStr "Enter a Line: "
+    str <- getLine
+    putStrLn str)
+
 
 main5 = do{
     putStrLn "Enter a Line: ";
@@ -47,3 +52,35 @@ main5 = do{
     nTimes 5 (putStrLn line);
 }
 
+main6=do{
+    putStr "Enter a Number: ";
+    n<-readLn :: IO Int;
+    if n>=0 
+        then putStrLn ("Factorial= " ++ show (fact n))  
+    else 
+        putStrLn "Negative Number";
+}
+
+main7=do{
+    putStr "Enter a Number: ";
+    n<-readLn :: IO Int;
+    if n<=0 
+        then putStrLn "Negative Number";  
+    else do
+        putStrLn ("Factorial= " ++ show (fact n));
+        main7;
+}
+--else do recursively calls until a condition is true. based on user input repetition.
+
+--to correct for buffer input output while compiling with ghc:
+--import System.IO(hFlush, stdout) done at top
+main=do{
+    putStr "Enter a Number: ";
+    hFlush stdout;
+    n<-readLn :: IO Int;
+    if n<=0 
+        then putStrLn "Negative Number";  
+    else do
+        putStrLn ("Factorial= " ++ show (fact n));
+        main;
+}
