@@ -1,4 +1,6 @@
-import System.IO(hFlush, stdout)
+import System.IO(hFlush, stdout, isEOF)
+import Control.Monad(forever, when)
+import System.Exit(exitSuccess)
 
 fact ::Int->Int
 fact n
@@ -74,7 +76,7 @@ main7=do{
 
 --to correct for buffer input output while compiling with ghc:
 --import System.IO(hFlush, stdout) done at top
-main=do{
+main8=do{
     putStr "Enter a Number: ";
     hFlush stdout;
     n<-readLn :: IO Int;
@@ -82,5 +84,29 @@ main=do{
         then putStrLn "Negative Number";  
     else do
         putStrLn ("Factorial= " ++ show (fact n));
-        main;
+        main8;
+}
+
+--EOF as exit condition. 
+readIntList :: IO [Int]
+readIntList = do 
+    exitCond <- isEOF 
+    if exitCond
+    then return []
+    else do 
+        x <- readLn :: IO Int 
+        xs <- readIntList 
+        return (x:xs)
+main9= do{
+    xs <- readIntList ;
+    print xs;
+}
+
+main10=do
+    putStrLn "Enter Lists to reverse"
+    forever $ do{
+        exitCond <- isEOF;
+        when exitCond exitSuccess;
+        inp<-readLn :: IO [Int];
+        print (reverse inp)
 }
