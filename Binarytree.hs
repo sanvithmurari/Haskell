@@ -13,3 +13,22 @@ isempty _=False
 size :: BTree a -> Int
 size Nil =0
 size (Node tl x tr)=1+ size tl + size tr
+
+createTree :: [a] -> BTree a
+createTree xs = ct (length xs) xs where
+    ct 0 xs=Nil
+    ct n xs=Node tl y tr where
+        m=n `div` 2
+        (tl,y:ys)=(ct m (take m xs),drop m xs)
+        tr = ct (n-m-1) ys
+
+instance Show a => Show (BTree a) where 
+    show :: Show a => BTree a -> String
+    show                        = concat . go 0 where 
+        go n Nil                = [indent n "[" ++ "*]"]
+        go n (Node Nil x Nil)   = [indent n "[" ++ show x ++ "]"]
+        go n (Node tl x tr)     = [indent n "[" ++ show x ++ "\n"] ++ 
+                                    go (n+2) tl ++ ["\n"] ++ 
+                                    go (n+2) tr ++ ["\n"] ++ 
+                                  [indent n "]"] 
+        indent n s              = replicate n ' ' ++ s
